@@ -1,5 +1,3 @@
-from django.db import models
-
 from uuid import uuid4
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager

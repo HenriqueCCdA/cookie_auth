@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'dj_rest_auth',
     'api_jwt.core',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'api_jwt.core.views.SimpleMiddleware',
 ]
 
 ROOT_URLCONF = 'api_jwt.urls'
@@ -132,24 +134,26 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    )
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+#     )
+# }
 
 
 # simpleJWT
 
+SIGNING_KEY = 'django-insecure-c%=%+r%hp+wjfbp1+!xlc9)m(4tkgpu=6d$@ik(&_-5+q$ci38'
+
 SIMPLE_JWT = {
-  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
-  'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-
-  'SIGNING_KEY': SECRET_KEY,
-
-  'USER_ID_FIELD': 'uuid',
-  'USER_ID_CLAIM': 'id',
-
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SIGNING_KEY,
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'USER_ID_FIELD': 'uuid',
+    'USER_ID_CLAIM': 'id',
 }
 
 # dj-rest-auth
@@ -161,7 +165,10 @@ JWT_AUTH_COOKIE = 'jwt-access-token'
 JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-token'
 JWT_AUTH_SECURE = False
 JWT_AUTH_HTTPONLY = True
-JWT_AUTH_SAMESITE = 'Strict'
+JWT_AUTH_SAMESITE = 'Lax'
+JWT_AUTH_REFRESH_COOKIE_PATH = '/token'
+
+JWT_AUTH_IN_BODY = True
 
 
 # CORS
@@ -170,4 +177,4 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-APPEND_SLASH=False
+APPEND_SLASH = False
