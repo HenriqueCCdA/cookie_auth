@@ -34,3 +34,13 @@ def test_logout(client, user):
 
     assert 'Thu, 01 Jan 1970 00:00:00 GMT' == access_token['expires']
     assert 'Thu, 01 Jan 1970 00:00:00 GMT' == refresh_token['expires']
+
+
+def test_without_token(client, user):
+
+    resp = client.post(resolve_url('logout'))
+    body = resp.json()
+
+    assert status.HTTP_401_UNAUTHORIZED == resp.status_code
+
+    assert {'detail': 'Refresh cookie was not included in request.'} == body

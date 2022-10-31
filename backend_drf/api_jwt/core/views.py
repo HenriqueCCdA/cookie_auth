@@ -25,6 +25,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from api_jwt.core.auth import MyJWTCookieAuthentication
+from api_jwt.core.serializers import RegisterSerializer
 
 AUTH_HEADER_TYPES = jwt_settings.AUTH_HEADER_TYPES
 
@@ -43,26 +44,18 @@ def get_user_info(request, user_id):
 @api_view(['POST'])
 def register(request):
 
-    data = request.data
+    serializer = RegisterSerializer(data=request.data)
 
-    name = data['name']
-    email = data['email']
-    password1 = data['password']
-    password2 = data['confirmPassword']
+    if not serializer.is_valid():
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    if password1 != password2:
-        return Response(
-            data={'error': 'Password do not match'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    user = User.objects.create(email=email, name=name, password=password1)
+    user = serializer.create(serializer.validated_data)
 
     access_token, refresh_token = jwt_encode(user)
 
-    data = {'uuid': user.uuid, 'name': user.name, 'email': user.email}
+    user_info = RegisterSerializer(instance=user)
 
-    response = Response(data=data, status=status.HTTP_201_CREATED)
+    response = Response(data=user_info.data, status=status.HTTP_201_CREATED)
 
     set_jwt_cookies(response, access_token, refresh_token)
     return response
@@ -70,6 +63,7 @@ def register(request):
 
 class MyLoginView(LoginView):
     def get_response(self):
+
         data = {'uuid': self.user.uuid, 'message': 'Login success'}
 
         response = Response(data, status=status.HTTP_200_OK)
@@ -80,10 +74,7 @@ class MyLoginView(LoginView):
 class MyLogoutView(LogoutView):
     def logout(self, request):
 
-        response = Response(
-            {'detail': _('Successfully logged out.')},
-            status=status.HTTP_200_OK,
-        )
+        response = Response({'detail': _('Successfully logged out.')}, status=status.HTTP_200_OK)
 
         if getattr(settings, 'REST_USE_JWT', False):
 
@@ -98,6 +89,7 @@ class MyLogoutView(LogoutView):
                 except KeyError:
                     response.data = {'detail': _('Refresh cookie was not included in request.')}
                     response.status_code = status.HTTP_401_UNAUTHORIZED
+                    return response
                 except (TokenError, AttributeError, TypeError) as error:
                     if hasattr(error, 'args'):
                         if 'Token is blacklisted' in error.args or 'Token is invalid or expired' in error.args:
@@ -110,6 +102,7 @@ class MyLogoutView(LogoutView):
                     else:
                         response.data = {'detail': _('An error has occurred.')}
                         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+                    return response
 
             elif not cookie_name:
                 message = _(
