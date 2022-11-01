@@ -147,7 +147,7 @@ SIGNING_KEY = 'django-insecure-c%=%+r%hp+wjfbp1+!xlc9)m(4tkgpu=6d$@ik(&_-5+q$ci3
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=5),
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SIGNING_KEY,
     'ROTATE_REFRESH_TOKENS': True,
@@ -168,7 +168,7 @@ JWT_AUTH_HTTPONLY = True
 JWT_AUTH_SAMESITE = 'Lax'
 JWT_AUTH_REFRESH_COOKIE_PATH = '/token'
 
-JWT_AUTH_IN_BODY = True
+JWT_AUTH_IN_BODY = False
 
 
 # CORS
@@ -176,5 +176,9 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
+
+
+# Avoid conflict between Admin and React front
+SESSION_COOKIE_PATH = '/admin/'
 
 APPEND_SLASH = False

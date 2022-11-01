@@ -36,7 +36,8 @@ User = get_user_model()
 @api_view(['GET'])
 @authentication_classes([MyJWTCookieAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user_info(request, user_id):
+# def get_user_info(request, user_id):
+def get_user_info(request):
     user = request.user
     return Response({'uuid': user.uuid, 'email': user.email, 'name': user.name})
 

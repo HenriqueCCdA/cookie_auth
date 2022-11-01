@@ -11,8 +11,14 @@ const initialState = {
 export const getUserData = createAsyncThunk(
   "user/info",
   async (none, thunkAPI) => {
-    const userId = thunkAPI.getState().auth.user.id;
+    console.log(thunkAPI.getState())
+    // const userId = thunkAPI.getState().auth.user.id;
+    const userId = thunkAPI.getState().auth.user.uuid;
     const data = await userService.getUserData(userId);
+
+    if (data.detail){
+      return thunkAPI.rejectWithValue(data.detail);
+    }
 
     if (data.errors) {
       return thunkAPI.rejectWithValue(data.errors[0]);

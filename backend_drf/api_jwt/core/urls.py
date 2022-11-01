@@ -16,6 +16,7 @@ urlpatterns = [
         MyRefreshViewWithCookieSupport.as_view(),
         name='token_refresh',
     ),
-    path('users/<uuid:user_id>', get_user_info, name='get_user_info'),
+    # path('users/<uuid:user_id>', get_user_info, name='get_user_info'),
+    path('users/', get_user_info, name='get_user_info'),
     path('register', register, name='register'),
 ]

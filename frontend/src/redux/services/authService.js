@@ -24,7 +24,7 @@ const login = async (data) => {
 };
 
 const logout = async () => {
-  const config = requestConfig(`${baseUrl}/logout`, "GET", null);
+  const config = requestConfig(`${baseUrl}/token/logout`, "POST", null);
   try {
     const res = await axios(config);
     return res.data;
