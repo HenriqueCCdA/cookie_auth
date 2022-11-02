@@ -146,12 +146,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SIGNING_KEY = 'django-insecure-c%=%+r%hp+wjfbp1+!xlc9)m(4tkgpu=6d$@ik(&_-5+q$ci38'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=60),
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SIGNING_KEY,
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
     'USER_ID_FIELD': 'uuid',
     'USER_ID_CLAIM': 'id',
 }

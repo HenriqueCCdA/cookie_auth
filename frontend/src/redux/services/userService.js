@@ -7,7 +7,6 @@ const getUserData = async (userId) => {
   const config = requestConfig(`${baseUrl}/users/`, "GET", null);
   try {
     const res = await axios(config);
-    console.log('3', res)
     return res.data;
   } catch (error) {
     console.log(error)
@@ -15,11 +14,9 @@ const getUserData = async (userId) => {
         try {
           let config = requestConfig(`${baseUrl}/token/refresh`, "POST", null);
           let res = await axios(config);
-          console.log('1', res)
           try {
             config = requestConfig(`${baseUrl}/users/`, "GET", null);
             res = await axios(config);
-            console.log('2', res)
 
             return res.data;
           } catch (error) {
