@@ -1,7 +1,7 @@
 import requests
-from requests.adapters import HTTPAdapter, Retry
 from time import sleep
 from http import HTTPStatus
+
 
 class Tokens:
 
@@ -85,9 +85,6 @@ if __name__ == '__main__':
 
     print(client.users())
 
+    # Exiprando o access token
     sleep(10)
     print(client.users())
-
-    # print(client.refresh_token())
-
-    # print(client.users())
